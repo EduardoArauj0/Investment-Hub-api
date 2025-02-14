@@ -3,6 +3,8 @@ node_modules/
 
 # Variáveis de ambiente
 .env
+.env.local
+.env.*.local
 
 # Logs e arquivos temporários
 logs/
@@ -14,3 +16,14 @@ yarn-error.log*
 # Diretórios do sistema
 .DS_Store
 Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+*.dockerfile
+*.dockerignore
+
+# VSCode
+.vscode/
+.vscode/*
+*.code-workspace
