@@ -53,6 +53,70 @@ class Tables {
       console.error("Erro ao criar tabela:", err.message);
     }
   }
-}
 
+  seed() {
+    console.log("Populando o banco de dados com dados iniciais...");
+
+    const insertCurrencies = `
+      INSERT INTO Currency (name, type) VALUES 
+      ('Real Brasileiro', 'BRL'),
+      ('Dólar Americano', 'USD'),
+      ('Euro', 'EUR')
+      ON DUPLICATE KEY UPDATE name = VALUES(name), type = VALUES(type)`;
+
+    db.query(insertCurrencies, (err) => {
+      if (err) {
+        console.error("Erro ao inserir moedas:", err.message);
+      } else {
+        console.log("Moedas inseridas com sucesso.");
+      }
+    });
+
+    const insertExchangeRates = `
+      INSERT INTO ExchangeRate (date, daily_variation, daily_rate, currency_id) VALUES 
+      ('2025-02-01', 0.5, 5.25, 2),
+      ('2025-02-02', -0.3, 5.22, 3)
+      ON DUPLICATE KEY UPDATE daily_variation = VALUES(daily_variation), daily_rate = VALUES(daily_rate)`;
+
+    db.query(insertExchangeRates, (err) => {
+      if (err) {
+        console.error("Erro ao inserir taxas de câmbio:", err.message);
+      } else {
+        console.log("Taxas de câmbio inseridas com sucesso.");
+      }
+    });
+
+    const insertInvestors = `
+      INSERT INTO Investor (name, email) VALUES 
+      ('Bruno Alves', 'bruno.alves@email.com'),
+      ('Eduardo Araujo', 'eduardo.araujo@email.com')
+      ON DUPLICATE KEY UPDATE name = VALUES(name), email = VALUES(email)`;
+
+    db.query(insertInvestors, (err) => {
+      if (err) {
+        console.error("Erro ao inserir investidores:", err.message);
+      } else {
+        console.log("Investidores inseridos com sucesso.");
+      }
+    });
+
+    const insertInvestments = `
+      INSERT INTO InvestmentHistory (initial_amount, months, interest_rate, final_amount, currency_id, investor_id) VALUES 
+      (10000, 12, 5.5, 10550, 2, 1),
+      (5000, 24, 4.2, 5200, 3, 2)
+      ON DUPLICATE KEY UPDATE 
+          initial_amount = VALUES(initial_amount), 
+          months = VALUES(months), 
+          interest_rate = VALUES(interest_rate), 
+          final_amount = VALUES(final_amount)`;
+
+    db.query(insertInvestments, (err) => {
+      if (err) {
+        console.error("Erro ao inserir investimentos:", err.message);
+      } else {
+        console.log("Histórico de investimentos inserido com sucesso.");
+      }
+    });
+  }
+}
 module.exports = new Tables();

@@ -10,7 +10,7 @@ const app = express();
 
 if (process.env.RUN_SEED === "true") {
   tables.init();
-  //tables.seed();
+  tables.seed();
 }
 
 app.use(bodyParser.json());
