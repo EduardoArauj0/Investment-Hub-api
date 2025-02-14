@@ -64,6 +64,25 @@ router.get("/:id", (req, res) => {
   });
 });
 
+router.get("/recent", (req, res) => {
+  const query = `
+        SELECT ER.*, C.name AS currency_name, C.type AS currency_type
+        FROM ExchangeRate ER
+        JOIN Currency C ON ER.currency_id = C.id
+        WHERE ER.date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar taxas de câmbio recentes:", err);
+      return res
+        .status(500)
+        .json({ message: "Erro ao buscar taxas de câmbio recentes" });
+    }
+    res.json(results);
+  });
+});
+
 router.put("/:id", (req, res) => {
   const { id } = req.params;
   const { date, daily_variation, daily_rate, currency_id } = req.body;
@@ -115,6 +134,23 @@ router.delete("/:id", (req, res) => {
       return res.status(404).json({ message: "Taxa de câmbio não encontrada" });
     }
     res.json({ message: "Taxa de câmbio deletada com sucesso" });
+  });
+});
+
+router.delete("/old", (req, res) => {
+  const query =
+    "DELETE FROM ExchangeRate WHERE date < DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("Erro ao deletar taxas de câmbio antigas:", err);
+      return res
+        .status(500)
+        .json({ message: "Erro ao deletar taxas de câmbio antigas" });
+    }
+    res.json({
+      message: `${result.affectedRows} registros de taxas de câmbio foram removidos`,
+    });
   });
 });
 

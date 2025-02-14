@@ -9,18 +9,29 @@ router.post("/", (req, res) => {
     return res.status(400).json({ message: "Nome e email são obrigatórios" });
   }
 
-  const query = "INSERT INTO Investor (name, email) VALUES (?, ?)";
-  db.query(query, [name, email], (err, result) => {
+  const checkEmailQuery = "SELECT * FROM Investor WHERE email = ?";
+  db.query(checkEmailQuery, [email], (err, results) => {
     if (err) {
-      console.error("Erro ao inserir investidor:", err);
-      return res.status(500).json({ message: "Erro ao inserir investidor" });
+      console.error("Erro ao verificar e-mail:", err);
+      return res.status(500).json({ message: "Erro ao verificar e-mail" });
     }
-    res
-      .status(201)
-      .json({
-        message: "Investidor inserido com sucesso",
-        id: result.insertId,
-      });
+    if (results.length > 0) {
+      return res.status(400).json({ message: "E-mail já cadastrado" });
+    }
+
+    const insertQuery = "INSERT INTO Investor (name, email) VALUES (?, ?)";
+    db.query(insertQuery, [name, email], (err, result) => {
+      if (err) {
+        console.error("Erro ao inserir investidor:", err);
+        return res.status(500).json({ message: "Erro ao inserir investidor" });
+      }
+      res
+        .status(201)
+        .json({
+          message: "Investidor inserido com sucesso",
+          id: result.insertId,
+        });
+    });
   });
 });
 
@@ -73,16 +84,28 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  const query = "DELETE FROM Investor WHERE id = ?";
-  db.query(query, [id], (err, result) => {
+
+  const deleteInvestmentsQuery =
+    "DELETE FROM InvestmentHistory WHERE investor_id = ?";
+  db.query(deleteInvestmentsQuery, [id], (err) => {
     if (err) {
-      console.error("Erro ao deletar investidor:", err);
-      return res.status(500).json({ message: "Erro ao deletar investidor" });
+      console.error("Erro ao deletar investimentos do investidor:", err);
+      return res
+        .status(500)
+        .json({ message: "Erro ao deletar investimentos do investidor" });
     }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Investidor não encontrado" });
-    }
-    res.json({ message: "Investidor deletado com sucesso" });
+
+    const deleteInvestorQuery = "DELETE FROM Investor WHERE id = ?";
+    db.query(deleteInvestorQuery, [id], (err, result) => {
+      if (err) {
+        console.error("Erro ao deletar investidor:", err);
+        return res.status(500).json({ message: "Erro ao deletar investidor" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Investidor não encontrado" });
+      }
+      res.json({ message: "Investidor deletado com sucesso" });
+    });
   });
 });
 
