@@ -1,0 +1,14 @@
+FROM node:18
+
+WORKDIR /app
+
+RUN apk update && apk upgrade
+
+RUN rm -rf ./node_modules
+RUN rm -rf package-lock.json
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "dev"]
