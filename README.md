@@ -1,4 +1,4 @@
-<h1 align="center" style="font-weight: bold;">Desafio Técnico Backend GiroTech 💻</h1>
+<h1 align="center" style="font-weight: bold;">Desafio Técnico Backend 💻</h1>
 
 <p align="center">
  <a href="#technologies">Tecnologias</a> • 
@@ -36,7 +36,7 @@ Aqui estão os pré-requisitos necessários para rodar o projeto:
 Para clonar o projeto, execute:
 
 ```bash
-git clone https://github.com/EduardoArauj0/Desafio-Tecnico-Backend_Giro.Tech
+git clone https://github.com/EduardoArauj0/Investment-Hub-api
 ```
 
 <h3>Configurando as variáveis .env</h3>
@@ -62,7 +62,7 @@ RUN_SEED=true
 Para rodar o projeto, siga as instruções:
 
 ```bash
-cd Desafio-Tecnico-Backend_Giro.Tech
+cd Investment-Hub-api
 npm install
 npm install express mysql2 dotenv
 npm install --save-dev jest supertest
